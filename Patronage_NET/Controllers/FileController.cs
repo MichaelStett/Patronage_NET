@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,9 @@ namespace Patronage_NET.Controllers
         {
             _env = env;
 
-            var DesktopPath = _env.ContentRootPath;
+            var rootPath = _env.ContentRootPath;
             FolderName = "TaskOne";
-            FullPath = System.IO.Path.Combine(DesktopPath, FolderName);
+            FullPath = System.IO.Path.Combine(rootPath, FolderName);
 
             FileSizeCap = 255;
             ContentCap = 50;
@@ -66,22 +67,44 @@ namespace Patronage_NET.Controllers
             }
         }
 
+        /// <summary>
+        /// Get file sepcified by name
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns> Requested file</returns>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(200, Type = typeof(PhysicalFileResult))]
+        [ProducesResponseType(404, Type = null)]
+        [ProducesResponseType(500)]
         [HttpGet]
-        public PhysicalFileResult GetAll(string name)
+        public PhysicalFileResult Get(string fileName)
         {
-            var filepath = System.IO.Path.Combine(FullPath, name);
-            var contentType = "text/json";
+            var filepath = System.IO.Path.Combine(FullPath, fileName);
+            var contentType = MediaTypeNames.Text.Plain;
 
             if (!System.IO.File.Exists(filepath))
             {
                 throw new Exception(HttpStatusCode.NotFound.ToString());
             }
 
-            return PhysicalFile(filepath, contentType, name, true); ;
+            return PhysicalFile(filepath, contentType, fileName, true); ;
         }
 
+        /// <summary>
+        /// Create new file with specified name and content
+        /// </summary>
+        /// <param name="myfile"></param>
+        /// <returns>Nothing</returns>
+        /// <response code="204">Success</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400, Type = null)]
+        [ProducesResponseType(500)]
         [HttpPost]
-        public async Task<string> Post([FromBody]Myfile myfile)
+        public async Task<IActionResult> Post([FromBody]Myfile myfile)
         {
             (var name, var content) = myfile.Deconstruct();
 
@@ -99,12 +122,24 @@ namespace Patronage_NET.Controllers
 
             await System.IO.File.WriteAllTextAsync(filepath, content);
 
-            Response.StatusCode = (int)HttpStatusCode.OK;
-            return $"Created {filepath}";
+            return NoContent();
         }
 
+        /// <summary>
+        /// Update file with specified name with content
+        /// </summary>
+        /// <param name="myfile"></param>
+        /// <returns>Nothing</returns>
+        /// <response code="204">Success</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal Server Error</response>
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400, Type = null)]
+        [ProducesResponseType(404, Type = null)]
+        [ProducesResponseType(500)]
         [HttpPut]
-        public async Task<string> Put([FromBody]Myfile myfile)
+        public async Task<IActionResult> Put([FromBody]Myfile myfile)
         {
             (var name, var content) = myfile.Deconstruct();
 
@@ -124,8 +159,7 @@ namespace Patronage_NET.Controllers
 
             await System.IO.File.AppendAllTextAsync(filepath, Environment.NewLine + content);
 
-            Response.StatusCode = (int)HttpStatusCode.OK;
-            return $"Updated {filepath}";
+            return NoContent();
         }
     }
 }
