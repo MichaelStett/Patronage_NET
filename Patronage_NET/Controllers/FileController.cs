@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Patronage_NET.Controllers
@@ -14,10 +15,13 @@ namespace Patronage_NET.Controllers
         private readonly int FileSizeCap;
         private readonly int ContentCap;
 
-        // Controller
-        public FileController()
+        private readonly IWebHostEnvironment _env;
+
+        public FileController(IWebHostEnvironment env)
         {
-            var DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            _env = env;
+
+            var DesktopPath = _env.ContentRootPath;
             FolderName = "TaskOne";
             FullPath = System.IO.Path.Combine(DesktopPath, FolderName);
 
@@ -63,19 +67,23 @@ namespace Patronage_NET.Controllers
         }
 
         [HttpGet]
-        public async Task<string/*HttpResponseMessage*/> GetAll(string name)
+        public PhysicalFileResult GetAll(string name)
         {
+            var filepath = System.IO.Path.Combine(FullPath, name);
+            var contentType = "text/json";
 
+            if (!System.IO.File.Exists(filepath))
+            {
+                throw new Exception(HttpStatusCode.NotFound.ToString());
+            }
 
-            return "";
+            return PhysicalFile(filepath, contentType, name, true); ;
         }
 
         [HttpPost]
         public async Task<string> Post([FromBody]Myfile myfile)
         {
             (var name, var content) = myfile.Deconstruct();
-
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             if (!System.IO.Directory.Exists(FullPath))
             {
@@ -84,7 +92,7 @@ namespace Patronage_NET.Controllers
 
             if (!isContentValid(content))
             {
-                return "CONTENT OVERFLOW";
+                throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
             var filepath = System.IO.Path.Combine(FullPath, name);
@@ -102,16 +110,14 @@ namespace Patronage_NET.Controllers
 
             var filepath = System.IO.Path.Combine(FullPath, name);
 
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
             if (!System.IO.File.Exists(filepath))
             {
-                return $"File doesn't exist";
+                throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
             if (!isContentValid(content))
             {
-                return $"CONTENT OVERFLOW";
+                throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
             nextFileName(ref filepath, name, content);
