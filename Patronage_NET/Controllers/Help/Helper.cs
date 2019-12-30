@@ -15,6 +15,9 @@ namespace Patronage_NET.Controllers.Help
 
         public Helper(IWebHostEnvironment env, IConfiguration config)
         {
+            _env = env;
+            _config = config;
+
             ContentCap = _config.GetValue<int>("FileController:ContentCap");
             FileSizeCap = _config.GetValue<int>("FileController:FileSizeCap");
             FolderName = _config.GetValue<string>("FileController:FolderName");
