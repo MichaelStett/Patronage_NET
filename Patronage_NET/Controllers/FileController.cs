@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Patronage_NET.Controllers
 {
@@ -17,25 +18,26 @@ namespace Patronage_NET.Controllers
         private readonly int ContentCap;
 
         private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _config;
 
-        public FileController(IWebHostEnvironment env)
+        public FileController(IWebHostEnvironment env, IConfiguration config)
         {
             _env = env;
+            _config = config;
 
-            var rootPath = _env.ContentRootPath;
-            FolderName = "TaskOne";
-            FullPath = System.IO.Path.Combine(rootPath, FolderName);
+            FolderName = _config.GetValue<string>("FileController:FolderName");
+            FileSizeCap = _config.GetValue<int>("FileController:FileSizeCap");
+            ContentCap = _config.GetValue<int>("FileController:ContentCap");
 
-            FileSizeCap = 255;
-            ContentCap = 50;
+            FullPath = System.IO.Path.Combine(_env.ContentRootPath, FolderName);
         }
 
-        private bool isContentValid(string content)
+        private bool IsContentValid(string content)
         {
             return content.Length <= ContentCap;
         }
 
-        private void nextFileName(ref string path, string name, string content)
+        private void NextFileName(ref string path, string name, string content)
         {
             var fileLength = new System.IO.FileInfo(path).Length;
             var contentLength = content.Length;
@@ -106,14 +108,15 @@ namespace Patronage_NET.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Myfile myfile)
         {
-            (var name, var content) = myfile.Deconstruct();
+            var name = myfile.Name;
+            var content = myfile.Content;
 
             if (!System.IO.Directory.Exists(FullPath))
             {
                 System.IO.Directory.CreateDirectory(FullPath);
             }
 
-            if (!isContentValid(content))
+            if (!IsContentValid(content))
             {
                 throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
@@ -141,7 +144,8 @@ namespace Patronage_NET.Controllers
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]Myfile myfile)
         {
-            (var name, var content) = myfile.Deconstruct();
+            var name = myfile.Name;
+            var content = myfile.Content;
 
             var filepath = System.IO.Path.Combine(FullPath, name);
 
@@ -150,12 +154,12 @@ namespace Patronage_NET.Controllers
                 throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
-            if (!isContentValid(content))
+            if (!IsContentValid(content))
             {
                 throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
-            nextFileName(ref filepath, name, content);
+            NextFileName(ref filepath, name, content);
 
             await System.IO.File.AppendAllTextAsync(filepath, Environment.NewLine + content);
 

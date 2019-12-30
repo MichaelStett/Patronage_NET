@@ -4,14 +4,12 @@ namespace Patronage_NET
 {
     public class Myfile
     {
-        public (string name, string content) Deconstruct() => (this.name, this.content);
-
         [Required]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string content { get; set; }
+        public string Content { get; set; }
 
     }
 }
