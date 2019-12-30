@@ -2,9 +2,8 @@
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Patronage_NET.Controllers.Help;
 
 namespace Patronage_NET.Controllers
 {
@@ -12,61 +11,11 @@ namespace Patronage_NET.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        private readonly string FullPath;
-        private readonly string FolderName;
-        private readonly int FileSizeCap;
-        private readonly int ContentCap;
+        private readonly IHelper _helper;
 
-        private readonly IWebHostEnvironment _env;
-        private readonly IConfiguration _config;
-
-        public FileController(IWebHostEnvironment env, IConfiguration config)
+        public FileController(IHelper helper)
         {
-            _env = env;
-            _config = config;
-
-            FolderName = _config.GetValue<string>("FileController:FolderName");
-            FileSizeCap = _config.GetValue<int>("FileController:FileSizeCap");
-            ContentCap = _config.GetValue<int>("FileController:ContentCap");
-
-            FullPath = System.IO.Path.Combine(_env.ContentRootPath, FolderName);
-        }
-
-        private bool IsContentValid(string content)
-        {
-            return content.Length <= ContentCap;
-        }
-
-        private void NextFileName(ref string path, string name, string content)
-        {
-            var fileLength = new System.IO.FileInfo(path).Length;
-            var contentLength = content.Length;
-
-            if ((fileLength + contentLength) > FileSizeCap)
-            {
-                int i = 1;
-                while (true)
-                {
-                    path = System.IO.Path.Combine(FullPath, name + $"-{i}");
-
-                    if (System.IO.File.Exists(path))
-                    {
-                        fileLength = new System.IO.FileInfo(path).Length;
-
-                        if ((fileLength + contentLength) <= FileSizeCap)
-                        {
-                            break;
-                        }
-                    }
-                    else if (!System.IO.File.Exists(path))
-                    {
-                        System.IO.File.Create(path);
-                        break;
-                    }
-
-                    i++;
-                }
-            }
+            _helper = helper;
         }
 
         /// <summary>
@@ -83,7 +32,10 @@ namespace Patronage_NET.Controllers
         [HttpGet]
         public PhysicalFileResult Get(string fileName)
         {
-            var filepath = System.IO.Path.Combine(FullPath, fileName);
+            var path = _helper.GetPath();
+
+            var filepath = System.IO.Path.Combine(path, fileName);
+
             var contentType = MediaTypeNames.Text.Plain;
 
             if (!System.IO.File.Exists(filepath))
@@ -111,17 +63,19 @@ namespace Patronage_NET.Controllers
             var name = myfile.Name;
             var content = myfile.Content;
 
-            if (!System.IO.Directory.Exists(FullPath))
+            var path = _helper.GetPath();
+
+            if (!System.IO.Directory.Exists(path))
             {
-                System.IO.Directory.CreateDirectory(FullPath);
+                System.IO.Directory.CreateDirectory(path);
             }
 
-            if (!IsContentValid(content))
+            if (!_helper.IsContentValid(content))
             {
                 throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
-            var filepath = System.IO.Path.Combine(FullPath, name);
+            var filepath = System.IO.Path.Combine(path, name);
 
             await System.IO.File.WriteAllTextAsync(filepath, content);
 
@@ -147,21 +101,23 @@ namespace Patronage_NET.Controllers
             var name = myfile.Name;
             var content = myfile.Content;
 
-            var filepath = System.IO.Path.Combine(FullPath, name);
+            var path = _helper.GetPath();
+
+            var filepath = System.IO.Path.Combine(path, name);
 
             if (!System.IO.File.Exists(filepath))
             {
                 throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
-            if (!IsContentValid(content))
+            if (!_helper.IsContentValid(content))
             {
                 throw new Exception(HttpStatusCode.BadRequest.ToString());
             }
 
-            NextFileName(ref filepath, name, content);
+            var newpath = _helper.GetNewPath(filepath, name, content);
 
-            await System.IO.File.AppendAllTextAsync(filepath, Environment.NewLine + content);
+            await System.IO.File.AppendAllTextAsync(newpath, Environment.NewLine + content);
 
             return NoContent();
         }

@@ -8,6 +8,7 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 using System;
 using System.IO;
+using Patronage_NET.Controllers.Help;
 
 namespace Patronage_NET
 {
@@ -35,6 +36,8 @@ namespace Patronage_NET
                 c.IncludeXmlComments(xmlPath);
             });
             services.AddControllers();
+
+            services.AddScoped<IHelper, Helper>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
