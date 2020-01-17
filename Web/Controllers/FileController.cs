@@ -3,9 +3,9 @@ using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Patronage_NET.Controllers.Help;
+using Patronage_NET.Web.Controllers.Help;
 
-namespace Patronage_NET.Controllers
+namespace Patronage_NET.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

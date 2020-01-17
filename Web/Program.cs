@@ -2,7 +2,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Patronage_NET
+namespace Patronage_NET.Web
 {
     public class Program
     {

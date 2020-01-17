@@ -348,5 +348,5 @@ MigrationBackup/
 .ionide/
 
 # Project specific
-**/TaskOne
-*/Patronage_NET.xml
+**/FilesDirectory
+*/Web.xml

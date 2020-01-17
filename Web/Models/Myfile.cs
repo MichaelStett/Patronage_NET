@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Patronage_NET
+namespace Patronage_NET.Web
 {
     public class Myfile
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace Patronage_NET.Controllers.Help
+namespace Patronage_NET.Web.Controllers.Help
 {
     public class Helper : IHelper
     {
@@ -20,7 +20,7 @@ namespace Patronage_NET.Controllers.Help
 
             ContentCap = _config.GetValue<int>("FileController:ContentCap");
             FileSizeCap = _config.GetValue<int>("FileController:FileSizeCap");
-            FolderName = _config.GetValue<string>("FileController:FolderName");
+            FolderName = _config.GetValue<string>("FileController:DirectoryName");
 
             FullPath = System.IO.Path.Combine(_env.ContentRootPath, FolderName);
         }

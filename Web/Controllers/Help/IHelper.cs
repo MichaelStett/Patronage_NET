@@ -1,4 +1,4 @@
-﻿namespace Patronage_NET.Controllers.Help
+﻿namespace Patronage_NET.Web.Controllers.Help
 {
     public interface IHelper
     {

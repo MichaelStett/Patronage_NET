@@ -8,9 +8,9 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 using System;
 using System.IO;
-using Patronage_NET.Controllers.Help;
+using Patronage_NET.Web.Controllers.Help;
 
-namespace Patronage_NET
+namespace Patronage_NET.Web
 {
     public class Startup
     {

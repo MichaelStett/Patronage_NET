@@ -4,14 +4,17 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>c83e2592-3fb6-4679-bfb3-729e5b4dad84</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RootNamespace>Patronage_NET.Web</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\micha\source\repos\Patronage_NET\Patronage_NET\Patronage_NET.xml</DocumentationFile>
-    <NoWarn>1701;1591</NoWarn>
+    <DocumentationFile>D:\.repos\Patronage_NET\Web\Web.xml</DocumentationFile>
+    <NoWarn></NoWarn>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
