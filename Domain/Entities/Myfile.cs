@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Patronage_NET.Web
+namespace Patronage_NET.Domain.Entities
 {
     public class Myfile
     {
@@ -10,6 +10,5 @@ namespace Patronage_NET.Web
         [Required]
         [MaxLength(50)]
         public string Content { get; set; }
-
     }
 }

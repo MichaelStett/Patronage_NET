@@ -2,14 +2,19 @@
 using System.Net;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Patronage_NET.Web.Controllers.Help;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Patronage_NET.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Patronage_NET.Application.Files.Queries.GetFile;
 
 namespace Patronage_NET.Web.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class FileController : ControllerBase
+    // TODO: [Authorize]
+    public class FileController : BaseController
     {
         private readonly IHelper _helper;
 
@@ -30,20 +35,10 @@ namespace Patronage_NET.Web.Controllers
         [ProducesResponseType(404, Type = null)]
         [ProducesResponseType(500)]
         [HttpGet]
-        public PhysicalFileResult Get(string fileName)
+        public async Task<ActionResult<PhysicalFileResult>> Get(string name)
         {
-            var path = _helper.GetPath();
-
-            var filepath = System.IO.Path.Combine(path, fileName);
-
-            var contentType = MediaTypeNames.Text.Plain;
-
-            if (!System.IO.File.Exists(filepath))
-            {
-                throw new Exception(HttpStatusCode.NotFound.ToString());
-            }
-
-            return PhysicalFile(filepath, contentType, fileName, true); ;
+            var res = await Mediator.Send(new GetFileQuery { FileName = name });
+            return Ok(res.Result);
         }
 
         /// <summary>
