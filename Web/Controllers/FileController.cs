@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Patronage_NET.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Patronage_NET.Application.Files.Queries.GetFile;
+using System.IO;
+using Patronage_NET.Application.Files.Commands.CreateFile;
 
 namespace Patronage_NET.Web.Controllers
 {
@@ -31,14 +33,13 @@ namespace Patronage_NET.Web.Controllers
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(200, Type = typeof(PhysicalFileResult))]
+        [ProducesResponseType(200, Type = typeof(FileResult))]
         [ProducesResponseType(404, Type = null)]
         [ProducesResponseType(500)]
         [HttpGet]
-        public async Task<ActionResult<PhysicalFileResult>> Get(string name)
+        public async Task<ActionResult<FileStreamResult>> Get(string name)
         {
-            var res = await Mediator.Send(new GetFileQuery { FileName = name });
-            return Ok(res.Result);
+           return Ok(await Mediator.Send(new GetFileQuery { FileName = name }));
         }
 
         /// <summary>
@@ -58,23 +59,7 @@ namespace Patronage_NET.Web.Controllers
             var name = myfile.Name;
             var content = myfile.Content;
 
-            var path = _helper.GetPath();
-
-            if (!System.IO.Directory.Exists(path))
-            {
-                System.IO.Directory.CreateDirectory(path);
-            }
-
-            if (!_helper.IsContentValid(content))
-            {
-                throw new Exception(HttpStatusCode.BadRequest.ToString());
-            }
-
-            var filepath = System.IO.Path.Combine(path, name);
-
-            await System.IO.File.WriteAllTextAsync(filepath, content);
-
-            return NoContent();
+            return Ok(Mediator.Send(new CreateFileCommand { Name = name, Content = content }));
         }
 
         /// <summary>

@@ -9,6 +9,9 @@ using System.Reflection;
 using System;
 using System.IO;
 using Patronage_NET.Web.Controllers.Help;
+using MediatR;
+using Patronage_NET.Application;
+using Patronage_NET.Persistence;
 
 namespace Patronage_NET.Web
 {
@@ -23,6 +26,10 @@ namespace Patronage_NET.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // services.AddInfrastructure(Configuration, Environment);
+            services.AddPersistence(Configuration);
+            services.AddApplication();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
