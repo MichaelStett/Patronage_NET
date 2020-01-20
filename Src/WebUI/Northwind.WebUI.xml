@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Northwind.WebUI</name>
+    </assembly>
+    <members>
+        <member name="M:Northwind.WebUI.Controllers.PatronageController.GetFile(System.String)">
+            <summary>
+            Get file specified by name
+            </summary>
+            <returns> Requested file</returns>
+            <response code="200">Success</response>
+            <response code="404">Not Found</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Northwind.WebUI.Controllers.PatronageController.CreateFile(System.String,System.String)">
+            <summary>
+            Create new file with specified name and content
+            </summary>
+            <returns>Nothing</returns>
+            <response code="204">Success</response>
+            <response code="400">Bad Request</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Northwind.WebUI.Controllers.PatronageController.UpdateFile(System.String,System.String)">
+            <summary>
+            Update file with specified name with content
+            </summary>
+            <returns>Nothing</returns>
+            <response code="204">Success</response>
+            <response code="400">Bad Request</response>
+            <response code="404">Not Found</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:Northwind.WebUI.Controllers.PatronageController.GetLogs">
+            <summary>
+            Get logs
+            </summary>
+            <returns>Array of logs</returns>
+        </member>
+        <member name="M:Northwind.WebUI.Controllers.PatronageController.GetReversedString(System.String)">
+            <summary>
+            Get reversed string
+            </summary>
+            <param name="text"></param>
+            <returns>String</returns>
+        </member>
+    </members>
+</doc>
