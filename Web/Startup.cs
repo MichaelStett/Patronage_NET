@@ -17,16 +17,18 @@ namespace Patronage_NET.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddInfrastructure(Configuration, Environment);
+            services.AddInfrastructure(Configuration, Environment);
             services.AddPersistence(Configuration);
             services.AddApplication();
 
