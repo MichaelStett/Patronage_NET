@@ -1,24 +1,25 @@
 ﻿using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
+using Microsoft.Extensions.Configuration;
+using Northwind.Application.Common.Models;
 
 namespace Northwind.Application.Patronage.Queries.GetLogs
 {
     public class GetLogsQueryHandler : IRequestHandler<GetLogsQuery, string[]>
     {
-        public GetLogsQueryHandler()
-        {
+        public readonly IConfiguration _config;
 
+        public GetLogsQueryHandler(IConfiguration config)
+        {
+            _config = config;
         }
 
         public async Task<string[]> Handle(GetLogsQuery request, CancellationToken cancellationToken)
         {
-            var filepath = @"C:\Users\Michal\Desktop\Directory\logs.txt";
+            var logfile = new LogFile(_config);
 
-            var lines = await File.ReadAllLinesAsync(filepath);
-
-            return lines;
+            return await logfile.Get();
         }
     }
 }

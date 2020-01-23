@@ -1,23 +1,23 @@
-using System.Text;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Http;
+using Microsoft.OpenApi.Models;
+using Northwind.Application.Common.Interfaces;
+using Northwind.Application;
 using Northwind.Infrastructure;
 using Northwind.Persistence;
-using Northwind.Application;
-using Northwind.Application.Common.Interfaces;
 using Northwind.WebUI.Common;
 using Northwind.WebUI.Services;
-using Swashbuckle.AspNetCore.SwaggerUI;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 
 namespace Northwind.WebUI
 {
@@ -59,6 +59,7 @@ namespace Northwind.WebUI
                 var xmlPath = System.IO.Path.Combine(System.AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
             services.AddControllers();
 
             services.AddInfrastructure(Configuration, Environment);

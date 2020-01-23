@@ -10,6 +10,8 @@ using Northwind.Application.Patronage.Commands.CreateFile;
 using Northwind.Application.Patronage.Commands.UpdateFile;
 using Northwind.Application.Patronage.Queries.GetLogs;
 using Northwind.Application.Patronage.Queries.GetReversedString;
+using System.Net.Http;
+using System.Net.Mime;
 
 namespace Northwind.WebUI.Controllers
 {
@@ -23,14 +25,15 @@ namespace Northwind.WebUI.Controllers
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
-        [ProducesResponseType(200, Type = typeof(PhysicalFileResult))]
+        [ProducesResponseType(200, Type = typeof(byte[]))]
         [ProducesResponseType(404, Type = null)]
         [ProducesResponseType(500)]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> GetFile(string name)
+        public async Task<ActionResult<byte[]>> GetFile(string name)
         {
-            return base.Ok(await Mediator.Send(new GetFileQuery{ Name = name }));
+            var data = await Mediator.Send(new GetFileQuery { Name = name });
+            return File(data, MediaTypeNames.Text.Plain);
         }
 
         /// <summary>
@@ -99,7 +102,7 @@ namespace Northwind.WebUI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<string>> GetReversedString(string text)
         {
-            return base.Ok(await Mediator.Send(new GetReversedStringQuery { Text = text}));
+            return base.Ok(await Mediator.Send(new GetReversedStringQuery { Text = text }));
         }
     }
 }

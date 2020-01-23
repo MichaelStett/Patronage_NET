@@ -1,19 +1,19 @@
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Northwind.Persistence;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Northwind.Application.Common.Interfaces;
 using Northwind.Application.System.Commands.SeedSampleData;
 using Northwind.Infrastructure.Identity;
+using Northwind.Persistence;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
 
 namespace Northwind.WebUI
 {
