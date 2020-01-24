@@ -8,6 +8,6 @@ namespace Northwind.Application.Patronage.Commands.UpdateFile
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Content { get; set; }
+        public string Data { get; set; }
     }
 }

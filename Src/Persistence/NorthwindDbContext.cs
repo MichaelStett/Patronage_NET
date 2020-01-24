@@ -30,6 +30,8 @@ namespace Northwind.Persistence
 
         public DbSet<MyFile> MyFiles { get; set; }
 
+        public DbSet<MyLog> MyLogs { get; set; }
+
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<Customer> Customers { get; set; }

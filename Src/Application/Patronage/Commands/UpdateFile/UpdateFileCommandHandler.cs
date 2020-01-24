@@ -63,7 +63,7 @@ namespace Northwind.Application.Patronage.Commands.UpdateFile
         public async Task<bool> Handle(UpdateFileCommand request, CancellationToken cancellationToken)
         {
             var filename = request.Name;
-            var content = request.Content;
+            var content = request.Data;
 
             var basepath = Environment.CurrentDirectory.ToString();
 

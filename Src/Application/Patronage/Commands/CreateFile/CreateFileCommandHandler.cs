@@ -1,40 +1,40 @@
-﻿using Microsoft.Extensions.Configuration;
-using MediatR;
+﻿using MediatR;
+using Northwind.Application.Common.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
-using System;
+using Microsoft.EntityFrameworkCore;
+using Northwind.Domain.Entities;
+using System.Text;
 
 namespace Northwind.Application.Patronage.Commands.CreateFile
 {
     public class CreateFileCommandHandler : IRequestHandler<CreateFileCommand, bool>
     {
-        public readonly IConfiguration _config;
+        private readonly INorthwindDbContext _context;
 
-        public CreateFileCommandHandler(IConfiguration config)
+        public CreateFileCommandHandler(INorthwindDbContext context)
         {
-            _config = config;
+            _context = context;
         }
 
         public async Task<bool> Handle(CreateFileCommand request, CancellationToken cancellationToken)
         {
-            var filename = request.Name;
-            var content = request.Content;
+            var name = request.Name;
+            var data = Encoding.ASCII.GetBytes(request.Data);
 
-            var basepath = Environment.CurrentDirectory.ToString();
+            var file = await _context.MyFiles
+                             .FirstAsync(m => m.FileName == name);
 
-            var dirname = _config.GetValue<string>("FilesOptions:DirectoryName");
+            if (file != null)
+                _context.MyFiles.Remove(file);
 
-            var path = Path.Combine(basepath, dirname);
-
-            if (!Directory.Exists(path))
+            var entity = new MyFile
             {
-                Directory.CreateDirectory(path);
-            }
+                FileName = name,
+                Data = data
+            };
 
-            var filepath = Path.Combine(path, filename);
-
-            await File.WriteAllTextAsync(filepath, content);
+            _context.MyFiles.Add(entity);
 
             return true;
         }

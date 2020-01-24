@@ -8,6 +8,9 @@ namespace Northwind.Application.Common.Interfaces
     public interface INorthwindDbContext
     {
         DbSet<MyFile> MyFiles { get; set; }
+
+        DbSet<MyLog> MyLogs { get; set; }
+
         DbSet<Category> Categories { get; set; }
 
         DbSet<Customer> Customers { get; set; }

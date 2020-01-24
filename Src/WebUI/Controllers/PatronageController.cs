@@ -33,7 +33,7 @@ namespace Northwind.WebUI.Controllers
         public async Task<ActionResult<byte[]>> GetFile(string name)
         {
             var data = await Mediator.Send(new GetFileQuery { Name = name });
-            return File(data, MediaTypeNames.Text.Plain);
+            return File(data, MediaTypeNames.Text.Plain, name, true);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Northwind.WebUI.Controllers
         [ProducesResponseType(500)]
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> CreateFile(string name, string content)
+        public async Task<ActionResult> CreateFile(string name, string data)
         {
-            var isSuccess = await Mediator.Send(new CreateFileCommand { Name = name, Content = content });
+            var isSuccess = await Mediator.Send(new CreateFileCommand { Name = name, Data = data });
 
             if (!isSuccess)
                 return BadRequest();
@@ -72,9 +72,9 @@ namespace Northwind.WebUI.Controllers
         [ProducesResponseType(500)]
         [HttpPut]
         [AllowAnonymous]
-        public async Task<ActionResult> UpdateFile(string name, string content)
+        public async Task<ActionResult> UpdateFile(string name, string data)
         {
-            var isSuccess = await Mediator.Send(new UpdateFileCommand { Name = name, Content = content });
+            var isSuccess = await Mediator.Send(new UpdateFileCommand { Name = name, Data = data });
 
             if (!isSuccess)
                 return BadRequest();
